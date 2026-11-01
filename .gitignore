@@ -1,0 +1,36 @@
+# Node & Frontend dependencies
+node_modules/
+frontend/dist/
+frontend/node_modules/
+.npm
+.vite
+
+# Go / Backend binaries & artifacts
+backend/api.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+backend/uploads/selfies/*
+!backend/uploads/selfies/.gitkeep
+backend/uploads/leaves/*
+!backend/uploads/leaves/.gitkeep
+
+# Environment & Sensitive configs
+.env
+.env.local
+.env.*.local
+*.log
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Internal task drafts & prompt guides (kept local)
+*.docx
+SKILL_*.md

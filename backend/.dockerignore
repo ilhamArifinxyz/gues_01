@@ -1,0 +1,10 @@
+api
+api.exe
+*.exe
+test_linux_bin
+uploads/*
+!uploads/.gitkeep
+tests/
+.git
+.gitignore
+*.log

@@ -1,0 +1,111 @@
+version: '3.8'
+
+# =====================================================================
+# SISTEM MANAJEMEN ABSENSI BERBASIS WEB (KELOMPOK 10 RPL UNIV TADULAKO)
+# Orkestrasi Layanan Multi-Container (Postgres + Backend Go + Frontend Nginx)
+# =====================================================================
+
+services:
+  # -------------------------------------------------------------------
+  # 1. DATABASE SERVICE: PostgreSQL 16 Alpine
+  # -------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: absensi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-absensi_db}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: Asia/Makassar
+    volumes:
+      # Persistensi data storage database
+      - postgres_data:/var/lib/postgresql/data
+      # Inisialisasi otomatis skema DDL & data seeder realistis saat container pertama kali dibuat
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seeds.sql:/docker-entrypoint-initdb.d/02-seeds.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-absensi_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - absensi-network
+
+  # -------------------------------------------------------------------
+  # 2. BACKEND API SERVICE: Go Chi REST API
+  # -------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: absensi-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-absensi_db}?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:-absensi-secret-key-k10-rpl-2026-very-secure}
+      UPLOAD_DIR: /app/uploads
+      BASE_URL: ${BACKEND_BASE_URL:-http://localhost:8080}
+      TZ: Asia/Makassar
+    volumes:
+      # Persistensi berkas unggahan bukti presensi selfie dan dokumen izin sakit/cuti
+      - backend_uploads:/app/uploads
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - absensi-network
+
+  # -------------------------------------------------------------------
+  # 3. FRONTEND SERVICE: React Vite + Nginx Reverse Proxy
+  # -------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/v1
+    container_name: absensi-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - absensi-network
+
+# ---------------------------------------------------------------------
+# VOLUMES & NETWORKS
+# ---------------------------------------------------------------------
+volumes:
+  postgres_data:
+    name: absensi_postgres_data
+    driver: local
+  backend_uploads:
+    name: absensi_backend_uploads
+    driver: local
+
+networks:
+  absensi-network:
+    name: absensi_default_network
+    driver: bridge
