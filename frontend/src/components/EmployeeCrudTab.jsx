@@ -264,11 +264,11 @@ export default function EmployeeCrudTab({ onDataChanged }) {
       <div className="bg-widget rounded-[32px] border-3 border-ink shadow-art-lg p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-              STAFF DIRECTORY
+            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+              DIREKTORI PEGAWAI
             </span>
             <span className="text-xs text-ink-muted font-mono font-bold">
-              F-05 Master Data
+              Database Karyawan
             </span>
           </div>
           <h2 className="text-2xl font-bold font-tech uppercase tracking-tight text-ink mt-1">

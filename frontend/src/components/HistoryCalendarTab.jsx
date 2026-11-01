@@ -215,7 +215,7 @@ export default function HistoryCalendarTab({ user, todayAttendance, onBack }) {
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-ink-muted font-bold">
-                  PORTAL RIWAYAT MANDIRI
+                  RIWAYAT KEHADIRAN
                 </span>
               </div>
               <h2 className="text-sm sm:text-base font-bold font-tech uppercase tracking-tight text-ink">
@@ -622,8 +622,8 @@ export default function HistoryCalendarTab({ user, todayAttendance, onBack }) {
                   <span className="text-xs font-tech font-bold text-white">
                     Bukti Swafoto Presensi
                   </span>
-                  <span className="text-[10px] font-mono text-canvas/70">
-                    Terenkripsi di Server Kampus Palu
+                  <span className="text-[10px] font-tech text-canvas/70">
+                    Tersimpan di Sistem Presensi
                   </span>
                 </div>
               )}
@@ -631,15 +631,12 @@ export default function HistoryCalendarTab({ user, todayAttendance, onBack }) {
               {/* HUD Frame Stamp Overlay */}
               <div className="absolute top-2 left-2 bg-pill/90 text-white px-2 py-0.5 rounded-lg text-[9px] font-mono border border-canvas/20 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>BIOMETRIC SCAN OK</span>
+                <span>SWAFOTO TERVERIFIKASI</span>
               </div>
 
               <div className="absolute bottom-2 left-2 bg-pill/90 text-white px-2 py-0.5 rounded-lg text-[9px] font-mono border border-canvas/20 flex items-center gap-1.5">
                 <i className="ph-bold ph-map-pin text-emerald-400 text-xs"></i>
-                <span>
-                  GPS: {selectedDayDetail.latitude || OFFICE_COORDS.latitude},{' '}
-                  {selectedDayDetail.longitude || OFFICE_COORDS.longitude}
-                </span>
+                <span>Area Kantor Palu</span>
               </div>
             </div>
 

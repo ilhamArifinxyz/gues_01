@@ -44,7 +44,7 @@ export default function ProfileTab({ user, onLogout }) {
     <div className="flex flex-col gap-3.5 animate-in fade-in duration-200">
       {/* ==================== 1. HERO IDENTITY CARD ==================== */}
       <div className="bg-widget rounded-[26px] p-4 border-2 border-ink shadow-art flex items-center gap-3.5">
-        <div className="w-14 h-14 rounded-2xl bg-pill border-2 border-ink flex items-center justify-center text-canvas text-xl font-digital font-bold shadow-art-sm shrink-0">
+        <div className="w-14 h-14 rounded-2xl bg-pill border-2 border-ink flex items-center justify-center text-canvas text-lg font-tech font-bold tracking-wider shadow-art-sm shrink-0">
           {getInitials(user?.nama_lengkap || 'Ilham Arifin')}
         </div>
         <div className="flex-1 min-w-0">
@@ -178,9 +178,6 @@ export default function ProfileTab({ user, onLogout }) {
             </>
           )}
         </button>
-        <p className="text-[10px] text-center font-mono text-ink-muted">
-          Token JWT akan dihapus dari penyimpanan peramban.
-        </p>
       </div>
     </div>
   );

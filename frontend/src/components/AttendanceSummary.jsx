@@ -39,7 +39,7 @@ export default function AttendanceSummary({ todayAttendance }) {
             </span>
             <i className="ph-bold ph-sign-in text-ink text-sm"></i>
           </div>
-          <p className="text-base font-digital font-bold text-ink mt-2 tracking-wide leading-none">
+          <p className="text-sm font-mono font-bold text-ink mt-2 tracking-tight leading-none">
             {masuk ? masuk.jam : '--:--:--'}
           </p>
           <div className="mt-2">
@@ -69,7 +69,7 @@ export default function AttendanceSummary({ todayAttendance }) {
             </span>
             <i className="ph-bold ph-sign-out text-ink text-sm"></i>
           </div>
-          <p className="text-base font-digital font-bold text-ink mt-2 tracking-wide leading-none">
+          <p className="text-sm font-mono font-bold text-ink mt-2 tracking-tight leading-none">
             {pulang ? pulang.jam : '--:--:--'}
           </p>
           <div className="mt-2">
@@ -104,12 +104,12 @@ export default function AttendanceSummary({ todayAttendance }) {
                 Durasi Kerja Efektif
               </span>
               <span className="text-xs font-tech font-bold text-white mt-0.5 block">
-                Total Jam Kerja: <span className="text-emerald-400 font-digital text-sm font-bold tracking-wider">{durationText}</span>
+                Total Jam Kerja: <span className="text-emerald-400 font-mono text-xs font-bold tracking-tight">{durationText}</span>
               </span>
             </div>
           </div>
           <div className="text-right">
-            <span className="text-base font-digital font-bold text-emerald-400 tracking-wider block leading-none">
+            <span className="text-sm font-mono font-bold text-emerald-400 tracking-tight block leading-none">
               {durationText}
             </span>
             <span className="text-[9px] font-tech font-bold text-emerald-300 mt-1 inline-block uppercase bg-emerald-900/60 px-1.5 py-0.5 rounded border border-emerald-500/40">

@@ -10,15 +10,14 @@ export default {
         digital: ['"VT323"', 'monospace'],
         tech: ['"Chakra Petch"', 'sans-serif'],
         soft: ['"Quicksand"', 'sans-serif'],
-        bubble: ['"Comfortaa"', 'cursive'],
       },
       colors: {
         canvas: '#D5DAD4',        /* Soft warm grey background */
         widget: '#E6EAE4',        /* Card widget off-white */
         'widget-pure': '#EFF3ED',
         ink: '#1E2322',           /* Dark charcoal manga ink */
-        'ink-muted': '#58615E',
-        'ink-light': '#8A9490',
+        'ink-muted': '#2C3533',   /* Darkened for WCAG AA compliance (> 4.5:1) */
+        'ink-light': '#46524E',   /* Darkened for WCAG AA compliance */
         pill: '#242A28',          /* Inverted black pill */
       },
       boxShadow: {

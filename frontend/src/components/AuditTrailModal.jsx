@@ -65,8 +65,8 @@ export default function AuditTrailModal({ isOpen, onClose }) {
         <div className="p-6 border-b-2 border-ink flex items-start justify-between gap-4 bg-widget-pure">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-                AUDIT TRAIL LOGS
+              <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+                LOG AUDIT KOREKSI
               </span>
               <span className="text-xs font-mono font-bold text-ink-muted">
                 Integritas Data Kepegawaian
@@ -96,7 +96,7 @@ export default function AuditTrailModal({ isOpen, onClose }) {
             <span className="text-xs font-tech font-bold uppercase text-ink">
               Total Catatan Audit:
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-sm font-bold">
+            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-mono text-xs font-bold">
               {logs.length} RECORD
             </span>
           </div>

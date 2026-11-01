@@ -37,8 +37,9 @@ export default function AdminDashboard() {
   const [selectedSelfie, setSelectedSelfie] = useState(null);
   const [isSelfieOpen, setIsSelfieOpen] = useState(false);
 
-  // F-06 & F-07 Modal States
+  // F-06 & F-07 Modal States & Dropdowns
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isCorrectionOpen, setIsCorrectionOpen] = useState(false);
   const [selectedCorrectionLog, setSelectedCorrectionLog] = useState(null);
@@ -99,55 +100,81 @@ export default function AdminDashboard() {
       <div className="bg-widget rounded-[32px] p-6 border-3 border-ink shadow-art-lg flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-              HRD CONTROL PANEL
+            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+              PANEL ADMINISTRASI HRD
             </span>
             <span className="text-xs text-ink-muted font-mono font-bold">
-              Palu Regional Center • Untad TI
+              Kantor Cabang Palu • Untad TI
             </span>
           </div>
           <h2 className="text-2xl font-bold font-tech uppercase tracking-tight text-ink mt-1">
             Portal Administrasi & Rekapitulasi Presensi
           </h2>
           <p className="text-xs text-ink-muted font-medium">
-            Rabu, 28 Oktober 2026 • Monitoring Waktu-Nyata Geofence, Kamera & Master Data Pegawai
+            Rabu, 28 Oktober 2026 • Monitoring Waktu-Nyata Presensi, Lokasi, dan Verifikasi Pegawai
           </p>
         </div>
 
-        {/* Header Action Buttons (Ekspor PDF Cetak Resmi, Ekspor CSV, Audit Log, Kelola) */}
+        {/* Header Action Buttons (Dropdown Ekspor Terkonsolidasi, Audit Log, Kelola) */}
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* Tombol F-06: Cetak Laporan PDF Resmi A4 */}
-          <button
-            type="button"
-            onClick={() => setIsPdfModalOpen(true)}
-            className="px-4 py-2.5 rounded-2xl bg-canvas border-2 border-ink text-ink font-tech font-bold text-xs shadow-art hover:bg-widget-pure transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px]"
-            title="Buka Pratinjau & Ekspor Dokumen Resmi A4 Ber-Kop Untad"
-          >
-            <i className="ph-bold ph-printer text-base"></i>
-            <span>📄 Cetak Laporan PDF</span>
-          </button>
+          {/* Tombol Ekspor & Cetak Terkonsolidasi */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsExportMenuOpen((prev) => !prev)}
+              className="px-4 py-2.5 rounded-2xl bg-canvas border-2 border-ink text-ink font-tech font-bold text-xs shadow-art hover:bg-widget-pure transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer select-none"
+              title="Opsi Ekspor dan Cetak Laporan Kehadiran"
+            >
+              <i className="ph-bold ph-download-simple text-base"></i>
+              <span>Ekspor & Cetak</span>
+              <i className={`ph-bold ${isExportMenuOpen ? 'ph-caret-up' : 'ph-caret-down'} text-xs`}></i>
+            </button>
 
-          {/* Tombol Ekspor CSV */}
-          <button
-            type="button"
-            onClick={handleExportCSV}
-            className="px-4 py-2.5 rounded-2xl bg-canvas border-2 border-ink text-ink font-tech font-bold text-xs shadow-art hover:bg-widget-pure transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px]"
-          >
-            <i className="ph-bold ph-file-csv text-base"></i>
-            <span>Ekspor CSV</span>
-          </button>
+            {isExportMenuOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-widget border-2 border-ink rounded-2xl shadow-art-lg z-50 p-1.5 flex flex-col gap-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPdfModalOpen(true);
+                    setIsExportMenuOpen(false);
+                  }}
+                  className="w-full px-3 py-2 text-left rounded-xl hover:bg-canvas text-xs font-tech font-bold text-ink flex items-center gap-2.5 transition cursor-pointer"
+                >
+                  <i className="ph-bold ph-file-pdf text-rose-600 text-lg"></i>
+                  <div>
+                    <span className="block leading-tight">📄 Cetak Laporan PDF (A4)</span>
+                    <span className="block text-[10px] font-mono text-ink-muted font-normal">Kop Untad S1 TI</span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleExportCSV();
+                    setIsExportMenuOpen(false);
+                  }}
+                  className="w-full px-3 py-2 text-left rounded-xl hover:bg-canvas text-xs font-tech font-bold text-ink flex items-center gap-2.5 transition cursor-pointer"
+                >
+                  <i className="ph-bold ph-file-csv text-emerald-600 text-lg"></i>
+                  <div>
+                    <span className="block leading-tight">📊 Unduh Data CSV</span>
+                    <span className="block text-[10px] font-mono text-ink-muted font-normal">Format spreadsheet/excel</span>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Tombol F-07: Panel Riwayat Audit Trail */}
           <button
             type="button"
             onClick={() => setIsAuditModalOpen(true)}
-            className="px-3.5 py-2.5 rounded-2xl bg-canvas border-2 border-ink text-ink font-tech font-bold text-xs shadow-art hover:bg-widget-pure transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px]"
+            className="px-3.5 py-2.5 rounded-2xl bg-canvas border-2 border-ink text-ink font-tech font-bold text-xs shadow-art hover:bg-widget-pure transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
             title="Lihat riwayat audit koreksi data presensi"
           >
             <i className="ph-bold ph-shield-check text-base"></i>
             <span>📜 Log Audit</span>
             {auditCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs font-bold leading-none">
+              <span className="px-2 py-0.5 rounded-full bg-ink text-canvas font-mono text-[10px] font-bold leading-none">
                 {auditCount}
               </span>
             )}
@@ -157,7 +184,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => setActiveSubTab('karyawan')}
-            className={`px-4 py-2.5 rounded-2xl border-2 border-ink font-tech font-bold text-xs shadow-art transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px] ${
+            className={`px-4 py-2.5 rounded-2xl border-2 border-ink font-tech font-bold text-xs shadow-art transition flex items-center gap-2 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer ${
               activeSubTab === 'karyawan'
                 ? 'bg-widget-pure text-ink'
                 : 'bg-ink text-canvas hover:bg-[#2C3331]'
@@ -413,7 +440,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="py-4 px-5">{item.cabang}</td>
                         <td
-                          className={`py-4 px-5 font-digital text-base font-bold ${
+                          className={`py-4 px-5 font-mono text-sm font-bold ${
                             item.status === 'TEPAT_WAKTU'
                               ? 'text-emerald-800'
                               : item.status === 'TERLAMBAT'

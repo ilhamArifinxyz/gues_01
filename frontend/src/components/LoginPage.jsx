@@ -41,12 +41,7 @@ export default function LoginPage({ onLoginSuccess }) {
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 selection:bg-ink selection:text-canvas">
       {/* Outer Bento Frame */}
-      <div className="w-full max-w-[420px] bg-canvas rounded-[44px] p-5 sm:p-6 border-4 border-ink shadow-art-lg relative flex flex-col gap-4 overflow-hidden">
-        {/* Ambient Manga Wind / Leaf */}
-        <div className="absolute -top-3 -right-3 text-ink/15 text-6xl pointer-events-none select-none animate-drift">
-          🍃
-        </div>
-
+      <div className="w-full sm:max-w-[420px] bg-canvas rounded-none sm:rounded-[44px] p-5 sm:p-6 border-0 sm:border-4 border-ink shadow-none sm:shadow-art-lg relative flex flex-col gap-4 overflow-hidden">
         {/* ==================== 1. HEADER BENTO ==================== */}
         <header className="bg-widget rounded-[26px] p-4 border-2 border-ink shadow-art flex items-center gap-3.5 transition-all">
           <div className="w-12 h-12 rounded-2xl bg-ink text-canvas border-2 border-ink flex items-center justify-center shadow-art-sm shrink-0">
@@ -176,7 +171,7 @@ export default function LoginPage({ onLoginSuccess }) {
           </div>
           <div className="flex items-center gap-1 font-mono text-[10px]">
             <i className="ph-bold ph-shield-check text-xs text-ink"></i>
-            <span>JWT 256-Bit</span>
+            <span>Sesi Terenkripsi</span>
           </div>
         </footer>
       </div>

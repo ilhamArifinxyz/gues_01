@@ -152,42 +152,51 @@ export default function PunchButton({
         </div>
       )}
 
-      {/* GPS Quick Simulator Bar for fast E2E testing */}
-      <div className="flex items-center justify-between pt-1 border-t border-ink/20 text-[10px] text-ink-muted">
-        <span className="font-mono font-bold tracking-tight">SIMULASI JARAK:</span>
-        <div className="flex gap-1.5">
-          <button
-            type="button"
-            onClick={() => onSetSimulation(true)}
-            className={`px-2 py-0.5 rounded-lg border border-ink font-bold font-tech transition shadow-art-sm ${
-              isWithinRadius
-                ? 'bg-emerald-300 text-ink'
-                : 'bg-emerald-100/70 text-ink/70 hover:bg-emerald-200'
-            }`}
-          >
-            18m (Dalam)
-          </button>
-          <button
-            type="button"
-            onClick={() => onSetSimulation(false)}
-            className={`px-2 py-0.5 rounded-lg border border-ink font-bold font-tech transition shadow-art-sm ${
-              !isWithinRadius
-                ? 'bg-rose-300 text-ink'
-                : 'bg-rose-100/70 text-ink/70 hover:bg-rose-200'
-            }`}
-          >
-            340m (Luar)
-          </button>
-          <button
-            type="button"
-            onClick={() => onSetSimulation('weak')}
-            className="px-2 py-0.5 rounded-lg border border-ink font-bold font-tech transition shadow-art-sm bg-amber-100/70 text-ink/80 hover:bg-amber-200"
-            title="Simulasi sinyal GPS lemah / triangulasi seluler > 100m"
-          >
-            ±145m (Kasar)
-          </button>
+      {/* GPS Quick Simulator Drawer (Collapsible for Clean Production View) */}
+      <details className="pt-1 border-t border-ink/20 group">
+        <summary className="text-[10px] text-ink-muted hover:text-ink font-mono font-bold tracking-tight cursor-pointer select-none flex items-center justify-between py-0.5 transition">
+          <span className="flex items-center gap-1.5">
+            <span>⚙️</span>
+            <span>Simulasi Uji Jarak GPS</span>
+          </span>
+          <span className="text-[9px] group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div className="flex items-center justify-between pt-2 pb-0.5 text-[10px] text-ink-muted">
+          <span className="font-mono font-bold tracking-tight text-[10px]">JARAK:</span>
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={() => onSetSimulation(true)}
+              className={`px-2 py-0.5 rounded-lg border border-ink font-bold font-tech transition shadow-art-sm cursor-pointer ${
+                isWithinRadius
+                  ? 'bg-emerald-300 text-ink'
+                  : 'bg-emerald-100/70 text-ink/70 hover:bg-emerald-200'
+              }`}
+            >
+              18m (Dalam)
+            </button>
+            <button
+              type="button"
+              onClick={() => onSetSimulation(false)}
+              className={`px-2 py-0.5 rounded-lg border border-ink font-bold font-tech transition shadow-art-sm cursor-pointer ${
+                !isWithinRadius
+                  ? 'bg-rose-300 text-ink'
+                  : 'bg-rose-100/70 text-ink/70 hover:bg-rose-200'
+              }`}
+            >
+              340m (Luar)
+            </button>
+            <button
+              type="button"
+              onClick={() => onSetSimulation('weak')}
+              className="px-2 py-0.5 rounded-lg border border-ink font-bold font-tech transition shadow-art-sm bg-amber-100/70 text-ink/80 hover:bg-amber-200 cursor-pointer"
+              title="Simulasi sinyal GPS lemah / triangulasi seluler > 100m"
+            >
+              ±145m (Kasar)
+            </button>
+          </div>
         </div>
-      </div>
+      </details>
     </div>
   );
 }

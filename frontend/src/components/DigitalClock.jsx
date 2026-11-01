@@ -24,7 +24,7 @@ export default function DigitalClock({ distanceMeters = 18.4, isWithinRadius = t
     <div className="bg-widget rounded-[24px] px-5 py-3 border-2 border-ink shadow-art flex items-center justify-between transition-all">
       <div>
         <span className="text-[9px] font-mono font-bold tracking-widest text-ink-muted uppercase block">
-          OFFICIAL SERVER TIME
+          WAKTU SERVER
         </span>
         <div className="flex items-baseline gap-2">
           <span className="text-3xl sm:text-4xl font-digital tracking-widest font-bold text-ink leading-none">
@@ -39,7 +39,7 @@ export default function DigitalClock({ distanceMeters = 18.4, isWithinRadius = t
       {/* Geofence Mini Status Badge & Radar Chip Button */}
       <div className="flex flex-col items-end">
         <span className="text-[9px] font-mono font-bold text-ink-muted uppercase">
-          GEOFENCE
+          RADIUS KANTOR
         </span>
         <div className="flex items-center gap-1.5 mt-0.5">
           {/* Status Badge */}

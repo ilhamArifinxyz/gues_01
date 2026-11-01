@@ -38,14 +38,14 @@ export default function SelfieModal({ isOpen, onClose, data }) {
           ) : (
             <div className="flex flex-col items-center justify-center text-canvas select-none">
               <span className="text-6xl mb-1">🧑‍💻</span>
-              <span className="text-[10px] font-mono text-canvas/70">Manga Live Capture</span>
+              <span className="text-[10px] font-tech text-canvas/70">Pratinjau Swafoto</span>
             </div>
           )}
 
           {/* HUD Overlay inside photo */}
           <div className="absolute bottom-2 left-2 bg-pill/90 text-white px-2 py-0.5 rounded-lg text-[9px] font-mono border border-canvas/20 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            GPS: Lat -0.8917, Lng 119.8872
+            Area Kantor Palu
           </div>
         </div>
 
@@ -53,7 +53,7 @@ export default function SelfieModal({ isOpen, onClose, data }) {
         <div className="space-y-1 text-xs font-tech text-ink bg-canvas p-3 rounded-2xl border-2 border-ink shadow-art-sm">
           <div className="flex items-center justify-between">
             <span className="text-ink-muted">Waktu Catat:</span>
-            <span className="font-digital text-base font-bold text-ink">{data.jamMasuk || data.jam || '08:04:12'}</span>
+            <span className="font-mono text-xs font-bold text-ink">{data.jamMasuk || data.jam || '08:04:12'}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-ink-muted">Jarak ke Titik:</span>

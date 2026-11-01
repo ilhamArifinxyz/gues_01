@@ -28,8 +28,8 @@ export default function AttendanceAnalyticsCard({ stats }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-ink/15 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-              F-06 ANALYTICS ENGINE
+            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+              ANALISIS TREN PRESENSI
             </span>
             <span className="text-[11px] font-mono text-ink-muted font-bold">
               Periode 30 Hari Terakhir

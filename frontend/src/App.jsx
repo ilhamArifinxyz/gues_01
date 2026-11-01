@@ -86,7 +86,7 @@ export default function App() {
               setGpsAccuracy(roundedAcc);
               if (acc > GPS_ACCURACY_THRESHOLD_METERS) {
                 setGpsAccuracyWarning(
-                  `Akurasi GPS rendah (±${Math.round(acc)}m > ${GPS_ACCURACY_THRESHOLD_METERS}m). Sinyal triangulasi seluler terdeteksi.`
+                  `Akurasi sinyal GPS lemah (±${Math.round(acc)}m). Mohon pastikan berada di area terbuka.`
                 );
               } else {
                 setGpsAccuracyWarning(null);
@@ -120,7 +120,7 @@ export default function App() {
       setDistanceMeters(dist);
       setIsWithinRadius(dist <= OFFICE_COORDS.radiusMeters);
       if (acc > GPS_ACCURACY_THRESHOLD_METERS) {
-        setGpsAccuracyWarning(`Akurasi GPS rendah (±${acc}m > ${GPS_ACCURACY_THRESHOLD_METERS}m). Sinyal triangulasi seluler terdeteksi.`);
+        setGpsAccuracyWarning(`Akurasi sinyal GPS lemah (±${acc}m). Mohon pastikan berada di area terbuka.`);
       } else {
         setGpsAccuracyWarning(null);
       }
@@ -140,7 +140,7 @@ export default function App() {
       setDistanceMeters(18.4);
       setIsWithinRadius(true);
       setGpsAccuracy(145.0); // low accuracy (>100m)
-      setGpsAccuracyWarning(`Akurasi GPS rendah (±145m > ${GPS_ACCURACY_THRESHOLD_METERS}m). Sinyal triangulasi seluler terdeteksi.`);
+      setGpsAccuracyWarning(`Akurasi sinyal GPS lemah (±145m). Mohon pastikan berada di area terbuka.`);
       setUserCoords({
         latitude: OFFICE_COORDS.latitude,
         longitude: OFFICE_COORDS.longitude
@@ -193,12 +193,12 @@ export default function App() {
     if (gpsAccuracy > GPS_ACCURACY_THRESHOLD_METERS) {
       setPunchFeedback({
         success: false,
-        title: '⚠️ AKURASI GPS TIDAK MEMADAI',
+        title: '⚠️ AKURASI GPS KURANG MEMADAI',
         details: [
           `Akurasi saat ini: ±${gpsAccuracy} meter`,
           `Batas toleransi maksimal: ${GPS_ACCURACY_THRESHOLD_METERS} meter`,
-          'Sinyal terdeteksi merupakan triangulasi seluler kasar / estimasi indoor.',
-          'Mohon aktifkan GPS satelit berpresisi tinggi dan berada di area terbuka untuk melakukan presensi sah.'
+          'Sinyal GPS terdeteksi belum cukup stabil untuk validasi kehadiran.',
+          'Mohon pastikan berada di area terbuka dengan GPS akurasi tinggi aktif.'
         ]
       });
       return;
@@ -223,12 +223,10 @@ export default function App() {
         success: true,
         title: '🎉 PRESENSI BERHASIL DICATAT!',
         details: [
-          `Jenis: ${res.data.jenis_presensi}`,
+          `Jenis: Presensi ${res.data.jenis_presensi}`,
           `Waktu: ${res.data.jam} WITA`,
-          `Status: ${res.data.status_kehadiran}`,
-          `Jarak: ${res.data.jarak_meter}m (Terverifikasi)`,
-          `Akurasi GPS: ±${res.data.akurasi_meter ?? gpsAccuracy}m (Presisi Tinggi)`,
-          'Bukti Swafoto: Terenkripsi & Tersimpan.'
+          `Status: ${res.data.status_kehadiran === 'TEPAT_WAKTU' ? 'Tepat Waktu' : res.data.status_kehadiran}`,
+          `Lokasi: Terverifikasi di Area Kantor (${res.data.jarak_meter}m)`
         ]
       });
     } catch (err) {
@@ -285,33 +283,40 @@ export default function App() {
           </div>
         </div>
 
-        {/* Right Nav: Mode Selector & Quick Logout */}
+        {/* Right Nav: Mode Selector (Admin Only) & Quick Logout */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Mode Selector Pills (Themed) */}
-          <div className="flex items-center bg-[#131615] p-1 rounded-2xl border-2 border-ink shadow-art-sm">
-            <button
-              type="button"
-              onClick={() => setMode('karyawan')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold font-tech transition-all flex items-center gap-1.5 cursor-pointer ${
-                mode === 'karyawan'
-                  ? 'bg-canvas text-ink shadow-art-sm'
-                  : 'text-[#9AA5A1] hover:text-white'
-              }`}
-            >
-              <i className="ph-bold ph-device-mobile"></i> Layar Karyawan
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('admin')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold font-tech transition-all flex items-center gap-1.5 cursor-pointer ${
-                mode === 'admin'
-                  ? 'bg-canvas text-ink shadow-art-sm'
-                  : 'text-[#9AA5A1] hover:text-white'
-              }`}
-            >
-              <i className="ph-bold ph-desktop"></i> Dashboard Admin
-            </button>
-          </div>
+          {/* Mode Selector Pills: Only visible to ADMIN users */}
+          {user?.role === 'ADMIN' ? (
+            <div className="flex items-center bg-[#131615] p-1 rounded-2xl border-2 border-ink shadow-art-sm">
+              <button
+                type="button"
+                onClick={() => setMode('karyawan')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold font-tech transition-all flex items-center gap-1.5 cursor-pointer ${
+                  mode === 'karyawan'
+                    ? 'bg-canvas text-ink shadow-art-sm'
+                    : 'text-[#9AA5A1] hover:text-white'
+                }`}
+              >
+                <i className="ph-bold ph-device-mobile"></i> Layar Karyawan
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('admin')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold font-tech transition-all flex items-center gap-1.5 cursor-pointer ${
+                  mode === 'admin'
+                    ? 'bg-canvas text-ink shadow-art-sm'
+                    : 'text-[#9AA5A1] hover:text-white'
+                }`}
+              >
+                <i className="ph-bold ph-desktop"></i> Dashboard Admin
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-[#131615] px-3 py-1.5 rounded-xl border border-ink-light/30 text-xs font-tech text-[#9AA5A1]">
+              <i className="ph-bold ph-identification-card text-emerald-400"></i>
+              <span className="font-bold text-white">Portal Karyawan</span>
+            </div>
+          )}
 
           {/* User Chip & Header Logout */}
           <div className="flex items-center gap-1.5">
@@ -336,14 +341,9 @@ export default function App() {
       {/* ==================== VIEW 1: KARYAWAN (MOBILE MOCKUP) =================== */}
       {/* ========================================================================= */}
       {mode === 'karyawan' && (
-        <main className="w-full flex justify-center py-6 sm:py-10 px-4">
-          {/* Mobile Device Container (Aesthetic Outer Case) */}
-          <div className="w-full max-w-[420px] bg-canvas rounded-[44px] p-4 sm:p-5 border-4 border-ink shadow-art-lg relative flex flex-col gap-4 overflow-hidden">
-            {/* Ambient Decorative Manga Wind / Leaf */}
-            <div className="absolute -top-3 -right-3 text-ink/15 text-6xl pointer-events-none select-none animate-drift">
-              🍃
-            </div>
-
+        <main className="w-full flex justify-center py-0 sm:py-8 px-0 sm:px-4">
+          {/* Mobile Device Container (Aesthetic Outer Case with Seamless Native Mobile View) */}
+          <div className="w-full sm:max-w-[420px] bg-canvas rounded-none sm:rounded-[44px] p-4 sm:p-5 border-x-0 border-y-0 sm:border-4 border-ink shadow-none sm:shadow-art-lg min-h-screen sm:min-h-0 relative flex flex-col gap-4 overflow-hidden">
             {/* 1. Bento Header */}
             <Header user={user} />
 
@@ -367,7 +367,7 @@ export default function App() {
                     <div className="flex items-center gap-2">
                       <span className="text-base">⚠️</span>
                       <span className="text-[11px] leading-tight">
-                        Akurasi GPS rendah (±{gpsAccuracy}m &gt; 100m). Sinyal triangulasi seluler terdeteksi!
+                        Akurasi GPS lemah (±{gpsAccuracy}m). Mohon pastikan berada di area terbuka.
                       </span>
                     </div>
                     <span className="text-[10px] underline font-mono shrink-0">Radar 🛰️</span>

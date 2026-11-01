@@ -128,10 +128,10 @@ export default function RadarMapModal({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold font-tech uppercase text-ink tracking-tight">
-                  RADAR GEOFENCING GPS
+                  PETA RADIUS KANTOR
                 </h3>
                 <span className="px-1.5 py-0.5 rounded-md bg-ink text-[#E6EAE4] font-mono text-[9px] font-bold">
-                  LIVE 2.0
+                  LIVE GPS
                 </span>
               </div>
               <p className="text-[11px] font-tech text-ink-muted flex items-center gap-1 font-semibold">
@@ -158,8 +158,8 @@ export default function RadarMapModal({
         <div className="relative bg-[#151C19] rounded-[24px] border-3 border-ink shadow-art p-3 sm:p-4 flex flex-col items-center overflow-hidden">
           {/* Tactical Manga Corner Brackets */}
           <div className="w-full flex justify-between items-center text-[9px] font-mono font-bold text-[#4E685E] px-1 select-none pointer-events-none">
-            <span>⌜ SCOPE: 360° AUTO-SCALE</span>
-            <span>FREQ: 1575.42 MHz (L1) ⌝</span>
+            <span>⌜ STATUS: AKTIF</span>
+            <span>RADIUS: {radiusOffice}M ⌝</span>
           </div>
 
           {/* SVG Tactical Display */}
@@ -535,17 +535,17 @@ export default function RadarMapModal({
           <div className="space-y-0.5">
             <p className="font-bold text-[11px] uppercase tracking-wide">
               {!isAccuracyValid
-                ? 'Sinyal Kasar / Triangulasi BTS Seluler Terdeteksi'
+                ? 'Sinyal GPS Kurang Akurat'
                 : !isWithinRadius
                 ? 'Lokasi Anda Di Luar Area Kantor Cabang'
                 : 'Status Lokasi & Akurasi Memenuhi Syarat Presensi'}
             </p>
             <p className="text-[11px] font-medium leading-relaxed opacity-90">
               {!isAccuracyValid
-                ? 'Akurasi sinyal melebihi threshold 100m. Untuk mencegah kecurangan posisi, silakan aktifkan mode GPS Akurasi Tinggi dan berdiri di area terbuka.'
+                ? 'Sinyal GPS terdeteksi belum cukup stabil (> 100m). Mohon pastikan berada di area terbuka dan aktifkan GPS akurasi tinggi.'
                 : !isWithinRadius
                 ? 'Anda berjarak ' + distanceMeters + 'm dari titik kantor (batas maksimal ' + radiusOffice + 'm). Dekatilah area kantor Palu untuk melakukan presensi.'
-                : 'Posisi GPS terverifikasi presisi tinggi dan berada di dalam batas lingkaran 50m. Anda dapat mencatat kehadiran dengan sah.'}
+                : 'Posisi GPS terverifikasi dan berada di dalam batas kantor. Anda dapat mencatat kehadiran dengan sah.'}
             </p>
           </div>
         </div>
@@ -554,52 +554,55 @@ export default function RadarMapModal({
         {/* ACTION BAR: Quick Simulator Bar & Live Hardware Refresh   */}
         {/* ========================================================= */}
         <div className="pt-2 border-t-2 border-ink flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          {/* Quick Simulation Buttons */}
-          <div className="flex items-center gap-1.5 w-full sm:w-auto">
-            <span className="text-[10px] font-mono font-bold text-ink-muted uppercase mr-1">
-              TES CEPAT:
-            </span>
-            <button
-              type="button"
-              onClick={() => onSetSimulation && onSetSimulation(true)}
-              className={`px-2 py-1 rounded-xl border-2 border-ink font-tech font-bold text-[10px] shadow-art-sm transition cursor-pointer active:translate-y-0.5 ${
-                isWithinRadius && isAccuracyValid
-                  ? 'bg-emerald-300 text-ink font-black'
-                  : 'bg-canvas hover:bg-emerald-100 text-ink'
-              }`}
-            >
-              18m (Dalam)
-            </button>
-            <button
-              type="button"
-              onClick={() => onSetSimulation && onSetSimulation(false)}
-              className={`px-2 py-1 rounded-xl border-2 border-ink font-tech font-bold text-[10px] shadow-art-sm transition cursor-pointer active:translate-y-0.5 ${
-                !isWithinRadius
-                  ? 'bg-rose-300 text-ink font-black'
-                  : 'bg-canvas hover:bg-rose-100 text-ink'
-              }`}
-            >
-              340m (Luar)
-            </button>
-            <button
-              type="button"
-              onClick={() => onSetSimulation && onSetSimulation('weak')}
-              className={`px-2 py-1 rounded-xl border-2 border-ink font-tech font-bold text-[10px] shadow-art-sm transition cursor-pointer active:translate-y-0.5 ${
-                !isAccuracyValid
-                  ? 'bg-amber-300 text-ink font-black'
-                  : 'bg-canvas hover:bg-amber-100 text-ink'
-              }`}
-            >
-              ±145m (Kasar)
-            </button>
-          </div>
+          {/* Quick Simulation Drawer (Collapsible) */}
+          <details className="w-full sm:w-auto text-[10px] group">
+            <summary className="font-mono font-bold text-ink-muted hover:text-ink cursor-pointer select-none flex items-center gap-1">
+              <span>⚙️ Uji Posisi</span>
+              <span className="text-[9px] group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <button
+                type="button"
+                onClick={() => onSetSimulation && onSetSimulation(true)}
+                className={`px-2 py-0.5 rounded-lg border border-ink font-tech font-bold text-[10px] shadow-art-sm transition cursor-pointer ${
+                  isWithinRadius && isAccuracyValid
+                    ? 'bg-emerald-300 text-ink'
+                    : 'bg-canvas hover:bg-emerald-100 text-ink'
+                }`}
+              >
+                18m
+              </button>
+              <button
+                type="button"
+                onClick={() => onSetSimulation && onSetSimulation(false)}
+                className={`px-2 py-0.5 rounded-lg border border-ink font-tech font-bold text-[10px] shadow-art-sm transition cursor-pointer ${
+                  !isWithinRadius
+                    ? 'bg-rose-300 text-ink'
+                    : 'bg-canvas hover:bg-rose-100 text-ink'
+                }`}
+              >
+                340m
+              </button>
+              <button
+                type="button"
+                onClick={() => onSetSimulation && onSetSimulation('weak')}
+                className={`px-2 py-0.5 rounded-lg border border-ink font-tech font-bold text-[10px] shadow-art-sm transition cursor-pointer ${
+                  !isAccuracyValid
+                    ? 'bg-amber-300 text-ink'
+                    : 'bg-canvas hover:bg-amber-100 text-ink'
+                }`}
+              >
+                ±145m
+              </button>
+            </div>
+          </details>
 
           {/* Hardware Live GPS Refresh Button */}
           <button
             type="button"
             onClick={handleLiveGpsRefresh}
             disabled={isRefreshingGps}
-            className="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-ink hover:bg-[#2C3331] text-canvas font-tech font-bold text-[11px] shadow-art-sm flex items-center justify-center gap-1.5 transition cursor-pointer active:translate-y-0.5 disabled:opacity-50"
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-ink hover:bg-[#2C3331] text-canvas font-tech font-bold text-xs shadow-art-sm flex items-center justify-center gap-2 transition cursor-pointer active:translate-y-0.5 disabled:opacity-50"
           >
             {isRefreshingGps ? (
               <>
@@ -609,7 +612,7 @@ export default function RadarMapModal({
             ) : (
               <>
                 <i className="ph-bold ph-crosshair text-sm"></i>
-                <span>📡 Refresh Sinyal GPS</span>
+                <span>📡 Perbarui Titik GPS</span>
               </>
             )}
           </button>

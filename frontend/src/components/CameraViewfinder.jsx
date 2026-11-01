@@ -46,7 +46,7 @@ export default function CameraViewfinder({ videoRef, isWebcamActive, setIsWebcam
         console.error('Camera access error:', err);
         setCameraError(
           err.name === 'NotAllowedError'
-            ? 'Izin kamera ditolak oleh browser. Anda tetap dapat melakukan presensi dengan mode tangkapan simulasi grafis.'
+            ? 'Izin kamera ditolak oleh peramban. Mohon izinkan akses kamera untuk verifikasi swafoto kehadiran.'
             : 'Perangkat kamera tidak ditemukan atau sedang digunakan oleh aplikasi lain.'
         );
       }
@@ -66,7 +66,7 @@ export default function CameraViewfinder({ videoRef, isWebcamActive, setIsWebcam
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-1.5 text-xs font-bold text-ink font-tech">
           <i className="ph-bold ph-camera text-sm"></i>
-          <span>LIVE SELFIE VERIFICATION</span>
+          <span>SWAFOTO KEHADIRAN</span>
         </div>
         <button
           type="button"
@@ -108,7 +108,7 @@ export default function CameraViewfinder({ videoRef, isWebcamActive, setIsWebcam
               <span className="absolute -right-2 text-canvas/70 text-xs font-mono font-bold">+</span>
             </div>
             <p className="text-[10px] text-canvas/60 font-tech mt-2 text-center">
-              Tekan &ldquo;Nyalakan Kamera&rdquo; untuk membuka feed WebRTC
+              Tekan &ldquo;Nyalakan Kamera&rdquo; untuk mengambil swafoto
             </p>
           </div>
         )}

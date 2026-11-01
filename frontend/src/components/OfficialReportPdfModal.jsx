@@ -43,8 +43,8 @@ export default function OfficialReportPdfModal({ isOpen, onClose, logs = [], sta
         <div className="p-4 sm:p-5 border-b-2 border-ink bg-widget-pure flex flex-wrap items-center justify-between gap-3 print:hidden">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-                A4 OFFICIAL DOCUMENT GENERATOR
+              <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+                CETAK DOKUMEN RESMI A4
               </span>
               <span className="text-xs font-mono font-bold text-ink-muted">
                 Kop Akademik Universitas Tadulako

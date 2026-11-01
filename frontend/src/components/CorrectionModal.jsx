@@ -63,8 +63,8 @@ export default function CorrectionModal({ isOpen, onClose, logItem, onSuccess })
         <div className="flex items-start justify-between border-b-2 border-ink pb-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-                AUDIT COMPLIANCE
+              <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+                KOREKSI DATA PRESENSI
               </span>
               <span className="text-[11px] font-mono text-ink-muted font-bold">
                 ID Presensi: #{logItem.id}
@@ -98,7 +98,7 @@ export default function CorrectionModal({ isOpen, onClose, logItem, onSuccess })
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-ink-muted font-tech uppercase">Jam Tercatat:</span>
-            <span className="font-digital text-base text-ink font-bold">
+            <span className="font-mono text-sm text-ink font-bold">
               {logItem.jamMasuk || '--:--:--'}
             </span>
           </div>

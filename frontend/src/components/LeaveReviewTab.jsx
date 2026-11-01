@@ -265,11 +265,11 @@ export default function LeaveReviewTab({ onStatsUpdate, onDataChanged }) {
       <div className="bg-widget rounded-[32px] p-6 border-3 border-ink shadow-art-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">
-              MODUL F-04
+            <span className="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-tech text-[10px] uppercase tracking-widest font-bold">
+              PERSETUJUAN IZIN
             </span>
             <span className="text-xs text-ink-muted font-mono font-bold">
-              HRD Verification Desk • Palu Central
+              Verifikasi Pengajuan Izin & Sakit
             </span>
           </div>
           <h2 className="text-2xl font-bold font-tech uppercase tracking-tight text-ink mt-1">
