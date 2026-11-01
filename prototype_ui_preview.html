@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Manajemen Absensi - Retro Manga Aesthetic</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Google Fonts: VT323 (LCD / Digital), Orbitron, Quicksand (Rounded Manga Clean) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Comfortaa:wght@600;700&family=Quicksand:wght@500;600;700&family=VT323&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            digital: ['"VT323"', 'monospace'],
+            tech: ['"Chakra Petch"', 'sans-serif'],
+            soft: ['"Quicksand"', 'sans-serif'],
+            bubble: ['"Comfortaa"', 'cursive'],
+          },
+          colors: {
+            canvas: '#D5DAD4',        /* Soft warm grey background from reference */
+            widget: '#E6EAE4',        /* Card widget off-white */
+            'widget-pure': '#EFF3ED',
+            ink: '#1E2322',           /* Dark charcoal manga ink */
+            'ink-muted': '#58615E',
+            'ink-light': '#8A9490',
+            pill: '#242A28',          /* Inverted black pill */
+          },
+          boxShadow: {
+            'art': '3px 4px 0px #1E2322',
+            'art-sm': '2px 2px 0px #1E2322',
+            'art-lg': '5px 6px 0px #1E2322',
+            'art-pressed': '1px 1px 0px #1E2322',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #171A19;
+      color: #1E2322;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #D5DAD4; }
+    ::-webkit-scrollbar-thumb { background: #1E2322; border-radius: 999px; }
+
+    /* Floating manga leaf animation */
+    @keyframes gentleDrift {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      50% { transform: translateY(-8px) rotate(8deg); opacity: 1; }
+      100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    }
+    .animate-drift {
+      animation: gentleDrift 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+
+  <!-- ==================== TOP NAVIGATION & MODE SELECTOR ==================== -->
+  <header class="w-full bg-[#1C201F] border-b-2 border-ink py-3 px-4 sm:px-8 flex flex-wrap items-center justify-between text-[#E6EAE4] z-50 sticky top-0 shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-canvas border-2 border-ink flex items-center justify-center text-ink font-bold shadow-art-sm">
+        <i class="ph-bold ph-fingerprint text-xl"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-sm font-bold tracking-wider font-tech uppercase text-white">Sisman Absensi</h1>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2A312E] border border-ink-light/40 text-emerald-400">v2.0 Manga Neo</span>
+        </div>
+        <p class="text-[11px] text-[#9AA5A1]">Kelompok 10 • Universitas Tadulako 2026</p>
+      </div>
+    </div>
+
+    <!-- Mode Selector Pills (Themed) -->
+    <div class="flex items-center bg-[#131615] p-1.5 rounded-2xl border-2 border-ink mt-2 sm:mt-0 shadow-art-sm">
+      <button id="btn-mode-karyawan" onclick="setMode('karyawan')" class="px-4 py-1.5 rounded-xl text-xs font-bold font-tech transition-all bg-canvas text-ink shadow-art-sm flex items-center gap-1.5">
+        <i class="ph-bold ph-device-mobile"></i> Layar Karyawan
+      </button>
+      <button id="btn-mode-admin" onclick="setMode('admin')" class="px-4 py-1.5 rounded-xl text-xs font-medium font-tech text-[#9AA5A1] hover:text-white transition-all flex items-center gap-1.5">
+        <i class="ph-bold ph-desktop"></i> Dashboard Admin
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- ==================== VIEW 1: KARYAWAN (MOBILE MOCKUP) =================== -->
+  <!-- ========================================================================= -->
+  <main id="view-karyawan" class="w-full flex justify-center py-6 sm:py-10 px-4">
+    
+    <!-- Mobile Device Container (Aesthetic Outer Case) -->
+    <div class="w-full max-w-[420px] bg-canvas rounded-[44px] p-4 sm:p-5 border-4 border-ink shadow-art-lg relative flex flex-col gap-4 overflow-hidden">
+      
+      <!-- Ambient Decorative Manga Wind / Leaf -->
+      <div class="absolute -top-3 -right-3 text-ink/15 text-6xl pointer-events-none select-none animate-drift">
+        🍃
+      </div>
+
+      <!-- 1. TOP HEADER WIDGET (Weather/Date Bento inspired by reference) -->
+      <div class="bg-widget rounded-[26px] p-3.5 border-2 border-ink shadow-art flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <!-- Calendar Inverted Pill -->
+          <div class="bg-pill text-white px-3 py-2 rounded-2xl border-2 border-ink text-center flex flex-col items-center justify-center min-w-[58px]">
+            <span class="text-[9px] font-tech tracking-widest text-[#9AA5A1] uppercase">OKT</span>
+            <span id="widget-day" class="text-2xl font-digital font-bold leading-none text-white">28</span>
+            <span class="text-[8px] font-mono text-emerald-400">RABU</span>
+          </div>
+
+          <!-- User Info & Shift -->
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+              <h2 class="text-xs font-bold tracking-tight text-ink uppercase font-tech">Ilham Arifin</h2>
+            </div>
+            <p class="text-[11px] text-ink-muted font-medium">Staf IT • F5512530109</p>
+            <p class="text-[10px] text-ink-light font-mono mt-0.5">Jadwal: 08:00 - 17:00 WITA</p>
+          </div>
+        </div>
+
+        <!-- Quote / Mood Capsule (from reference style) -->
+        <div class="hidden sm:flex flex-col items-end text-right border-l-2 border-ink/20 pl-3">
+          <span class="text-[9px] font-tech text-ink-muted uppercase">Palu Branch</span>
+          <span class="text-[10px] font-bold text-ink italic">Work with art & precision.</span>
+        </div>
+      </div>
+
+      <!-- 2. RETRO DIGITAL CLOCK WIDGET (Exact match to reference style!) -->
+      <div class="bg-widget rounded-[24px] px-5 py-3 border-2 border-ink shadow-art flex items-center justify-between">
+        <div>
+          <span class="text-[9px] font-mono font-bold tracking-widest text-ink-muted uppercase block">OFFICIAL SERVER TIME</span>
+          <div class="flex items-baseline gap-2">
+            <span id="digital-clock" class="text-3xl sm:text-4xl font-digital tracking-widest font-bold text-ink leading-none">
+              08:08:35
+            </span>
+            <span class="text-xs font-tech font-bold text-ink-muted">WITA</span>
+          </div>
+        </div>
+
+        <!-- Geofence Mini Status Badge (Seamlessly integrated, no standalone card!) -->
+        <div id="gps-mini-badge" class="flex flex-col items-end">
+          <span class="text-[9px] font-mono font-bold text-ink-muted uppercase">GEOFENCE</span>
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-200/80 border-2 border-ink text-ink text-[10px] font-bold shadow-art-sm mt-0.5">
+            <span id="gps-dot" class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            <span id="gps-status-text">18m (Aman)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. LIVE WEBCAM & SELFIE VIEWFINDER (Manga Frame Style) -->
+      <div class="bg-widget rounded-[28px] p-3.5 border-2 border-ink shadow-art relative flex flex-col gap-3">
+        
+        <!-- Header Viewfinder -->
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-ink font-tech">
+            <i class="ph-bold ph-camera"></i> LIVE SELFIE VERIFICATION
+          </div>
+          <button onclick="toggleWebcam()" id="btn-toggle-cam" class="text-[10px] font-tech font-bold px-2.5 py-1 rounded-xl bg-canvas border-2 border-ink hover:bg-widget-pure transition shadow-art-sm">
+            Nyalakan Kamera
+          </button>
+        </div>
+
+        <!-- Camera Viewfinder Box (Retro Comic Vignette) -->
+        <div class="relative w-full aspect-[4/3] bg-ink rounded-[22px] overflow-hidden border-2 border-ink shadow-inner flex items-center justify-center">
+          
+          <!-- Real Webcam Video Element -->
+          <video id="webcam-video" autoplay playsinline muted class="hidden w-full h-full object-cover scale-x-[-1]"></video>
+          
+          <!-- Fallback Simulated Manga Oval Target -->
+          <div id="simulated-viewfinder" class="absolute inset-0 flex flex-col items-center justify-center p-4">
+            <!-- Oval Face Guide with Corner Crosshairs -->
+            <div class="w-32 h-44 rounded-full border-2 border-dashed border-canvas/70 flex flex-col items-center justify-center relative">
+              <span class="text-3xl">👤</span>
+              <span class="text-[9px] font-tech tracking-wider text-canvas/80 mt-1 uppercase">Wajah Di Sini</span>
+              <!-- Crosshair accents -->
+              <span class="absolute -top-2 text-canvas/60 text-xs font-mono">+</span>
+              <span class="absolute -bottom-2 text-canvas/60 text-xs font-mono">+</span>
+            </div>
+          </div>
+
+          <!-- Bottom Left HUD Watermark (Manga / Anime HUD style) -->
+          <div class="absolute bottom-2.5 left-2.5 bg-pill/90 text-white border border-canvas/30 px-2.5 py-1 rounded-xl text-[10px] font-mono flex items-center gap-2">
+            <span class="text-emerald-400 font-bold">● REC</span>
+            <span id="hud-timestamp">2026-10-28 08:08:35</span>
+          </div>
+
+          <!-- Top Right Simulated GPS Lat/Lng -->
+          <div class="absolute top-2.5 right-2.5 bg-pill/90 text-[#D5DAD4] border border-canvas/30 px-2 py-0.5 rounded-lg text-[9px] font-mono">
+            GPS: -0.8917, 119.8872
+          </div>
+        </div>
+
+        <!-- 4. BIG TACTILE PUNCH BUTTON (Solid Charcoal Manga Aesthetic) -->
+        <button id="btn-punch" onclick="handlePunch()" class="w-full py-4 px-4 bg-ink hover:bg-[#2C3331] active:translate-x-[2px] active:translate-y-[2px] active:shadow-art-sm text-canvas font-bold font-tech text-sm tracking-wider rounded-[20px] border-2 border-ink shadow-art transition flex items-center justify-center gap-2 uppercase">
+          <i class="ph-bold ph-camera text-lg"></i>
+          <span>Ambil Foto & Catat Presensi</span>
+        </button>
+
+        <!-- Warning banner if outside geofence -->
+        <div id="punch-warning" class="hidden p-2 rounded-xl bg-rose-200 border-2 border-ink text-ink text-center text-xs font-bold font-tech">
+          ⛔ Anda berada di luar radius kantor (340 meter). Presensi ditolak!
+        </div>
+
+        <!-- GPS Quick Simulator Bar (Hidden subtly for testing) -->
+        <div class="flex items-center justify-between pt-1 border-t border-ink/20 text-[10px] text-ink-muted">
+          <span class="font-mono">SIMULASI JARAK:</span>
+          <div class="flex gap-2">
+            <button onclick="setSimulatedLocation(true)" class="px-2 py-0.5 rounded-lg border border-ink bg-emerald-100 text-ink font-bold hover:bg-emerald-200">
+              18m (Dalam)
+            </button>
+            <button onclick="setSimulatedLocation(false)" class="px-2 py-0.5 rounded-lg border border-ink bg-rose-100 text-ink font-bold hover:bg-rose-200">
+              340m (Luar)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. ATTENDANCE LOG CAPSULE (Inspired by the Progress & Steps widgets from reference) -->
+      <div class="grid grid-cols-2 gap-3">
+        
+        <!-- Masuk Status Capsule -->
+        <div class="bg-widget rounded-[22px] p-3 border-2 border-ink shadow-art flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-tech font-bold text-ink-muted tracking-wider uppercase">Presensi Masuk</span>
+            <i class="ph-bold ph-sign-in text-ink text-sm"></i>
+          </div>
+          <p id="summary-masuk" class="text-base font-digital font-bold text-ink mt-2 tracking-wide leading-none">--:--:--</p>
+          <div class="mt-2">
+            <span id="badge-masuk" class="inline-block text-[9px] font-bold font-tech px-2 py-0.5 rounded-full bg-ink/10 text-ink-muted border border-ink/20">
+              Belum Hadir
+            </span>
+          </div>
+        </div>
+
+        <!-- Pulang Status Capsule -->
+        <div class="bg-widget rounded-[22px] p-3 border-2 border-ink shadow-art flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-tech font-bold text-ink-muted tracking-wider uppercase">Presensi Pulang</span>
+            <i class="ph-bold ph-sign-out text-ink text-sm"></i>
+          </div>
+          <p class="text-base font-digital font-bold text-ink mt-2 tracking-wide leading-none">--:--:--</p>
+          <div class="mt-2">
+            <span class="inline-block text-[9px] font-bold font-tech px-2 py-0.5 rounded-full bg-ink/10 text-ink-muted border border-ink/20">
+              Pukul 17:00
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 6. BOTTOM NAVIGATION (Retro Capsule Buttons) -->
+      <nav class="bg-widget rounded-[22px] p-2 border-2 border-ink shadow-art flex items-center justify-around text-ink text-[11px] font-tech font-bold">
+        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ink text-canvas border border-ink">
+          <i class="ph-fill ph-house text-sm"></i> Beranda
+        </button>
+        <button onclick="alert('Membuka rekap riwayat presensi bulan ini.')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-canvas transition border border-transparent hover:border-ink">
+          <i class="ph-bold ph-calendar text-sm"></i> Riwayat
+        </button>
+        <button onclick="openLeaveModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-canvas transition border border-transparent hover:border-ink">
+          <i class="ph-bold ph-pen text-sm"></i> Izin
+        </button>
+      </nav>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- ===================== VIEW 2: ADMIN HRD (DESKTOP) ======================= -->
+  <!-- ========================================================================= -->
+  <main id="view-admin" class="hidden w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-6">
+    
+    <!-- Admin Top Header Banner -->
+    <div class="bg-widget rounded-[32px] p-6 border-3 border-ink shadow-art-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-ink text-canvas font-digital text-xs uppercase tracking-widest font-bold">HRD CONTROL</span>
+          <span class="text-xs text-ink-muted font-mono">Palu Regional Center</span>
+        </div>
+        <h2 class="text-2xl font-bold font-tech uppercase tracking-tight text-ink mt-1">Rekapitulasi Kehadiran Pegawai</h2>
+        <p class="text-xs text-ink-muted">Rabu, 28 Oktober 2026 • Monitoring Waktu-Nyata Geofence & Kamera</p>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="exportCSV()" class="px-4 py-2.5 rounded-2xl bg-canvas border-2 border-ink text-ink font-tech font-bold text-xs shadow-art hover:bg-widget-pure transition flex items-center gap-2">
+          <i class="ph-bold ph-file-csv text-base"></i> Ekspor CSV
+        </button>
+        <button class="px-4 py-2.5 rounded-2xl bg-ink border-2 border-ink text-canvas font-tech font-bold text-xs shadow-art hover:bg-[#2C3331] transition flex items-center gap-2">
+          <i class="ph-bold ph-user-plus text-base"></i> Tambah Karyawan
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Bento Stats Cards (Inverted LCD Style from reference) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Total -->
+      <div class="bg-widget rounded-[26px] p-5 border-2 border-ink shadow-art flex flex-col justify-between">
+        <div class="flex items-center justify-between text-ink-muted">
+          <span class="text-[10px] font-tech font-bold uppercase tracking-wider">TOTAL PEGAWAI</span>
+          <i class="ph-bold ph-users text-lg text-ink"></i>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span class="text-4xl font-digital font-bold text-ink leading-none">120</span>
+          <span class="text-xs font-tech font-semibold text-ink-muted">ORANG</span>
+        </div>
+        <div class="text-[10px] font-mono text-ink-muted border-t border-ink/15 pt-2">
+          3 Cabang Kantor Aktif
+        </div>
+      </div>
+
+      <!-- Hadir Tepat -->
+      <div class="bg-widget rounded-[26px] p-5 border-2 border-ink shadow-art flex flex-col justify-between">
+        <div class="flex items-center justify-between text-ink-muted">
+          <span class="text-[10px] font-tech font-bold uppercase tracking-wider text-emerald-800">TEPAT WAKTU</span>
+          <i class="ph-bold ph-check-circle text-lg text-emerald-700"></i>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span class="text-4xl font-digital font-bold text-emerald-800 leading-none">98</span>
+          <span class="text-xs font-tech font-bold text-emerald-700">(81.6%)</span>
+        </div>
+        <div class="text-[10px] font-mono text-emerald-700 border-t border-ink/15 pt-2">
+          Masuk &lt; 08:15 WITA
+        </div>
+      </div>
+
+      <!-- Terlambat -->
+      <div class="bg-widget rounded-[26px] p-5 border-2 border-ink shadow-art flex flex-col justify-between">
+        <div class="flex items-center justify-between text-ink-muted">
+          <span class="text-[10px] font-tech font-bold uppercase tracking-wider text-amber-800">TERLAMBAT</span>
+          <i class="ph-bold ph-clock-countdown text-lg text-amber-700"></i>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span class="text-4xl font-digital font-bold text-amber-800 leading-none">14</span>
+          <span class="text-xs font-tech font-bold text-amber-700">(11.6%)</span>
+        </div>
+        <div class="text-[10px] font-mono text-amber-800 border-t border-ink/15 pt-2">
+          Lewat Toleransi 15 Mnt
+        </div>
+      </div>
+
+      <!-- Izin / Sakit -->
+      <div class="bg-widget rounded-[26px] p-5 border-2 border-ink shadow-art flex flex-col justify-between">
+        <div class="flex items-center justify-between text-ink-muted">
+          <span class="text-[10px] font-tech font-bold uppercase tracking-wider text-purple-800">IZIN / SAKIT</span>
+          <i class="ph-bold ph-first-aid text-lg text-purple-700"></i>
+        </div>
+        <div class="my-3 flex items-baseline gap-2">
+          <span class="text-4xl font-digital font-bold text-purple-800 leading-none">08</span>
+          <span class="text-xs font-tech font-bold text-purple-700">PENGAJUAN</span>
+        </div>
+        <div class="text-[10px] font-mono text-purple-700 border-t border-ink/15 pt-2">
+          2 Menunggu Approval
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Table Container -->
+    <div class="bg-widget rounded-[32px] border-3 border-ink shadow-art-lg overflow-hidden">
+      <!-- Table Header & Filter Bar -->
+      <div class="p-5 border-b-2 border-ink flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <h3 class="text-sm font-bold font-tech uppercase text-ink">Catatan Log Transaksi</h3>
+          <span class="px-2 py-0.5 rounded-full bg-pill text-white text-[10px] font-mono">LIVE FEED</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <input type="text" placeholder="Cari NIK / Nama..." class="px-3.5 py-1.5 rounded-xl bg-canvas border-2 border-ink text-xs font-medium placeholder-ink-muted focus:outline-none">
+          <select class="px-3 py-1.5 rounded-xl bg-canvas border-2 border-ink text-xs font-tech font-bold focus:outline-none">
+            <option>Semua Cabang Kantor</option>
+            <option>Kantor Cabang Palu</option>
+            <option>Kantor Pusat</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-canvas/80 text-ink-muted font-tech uppercase text-[10px] tracking-wider border-b-2 border-ink">
+            <tr>
+              <th class="py-3.5 px-5">NIK</th>
+              <th class="py-3.5 px-5">Nama Karyawan</th>
+              <th class="py-3.5 px-5">Cabang</th>
+              <th class="py-3.5 px-5">Jam Masuk</th>
+              <th class="py-3.5 px-5">Jarak Geofence</th>
+              <th class="py-3.5 px-5">Status</th>
+              <th class="py-3.5 px-5 text-center">Bukti Swafoto</th>
+              <th class="py-3.5 px-5 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y-2 divide-ink/10 font-medium">
+            <tr class="hover:bg-widget-pure transition">
+              <td class="py-4 px-5 font-mono font-bold text-ink">F5512530109</td>
+              <td class="py-4 px-5 font-bold font-tech text-ink">Ilham Arifin</td>
+              <td class="py-4 px-5">Cabang Palu</td>
+              <td class="py-4 px-5 font-digital text-base font-bold text-emerald-800">08:04:12</td>
+              <td class="py-4 px-5 font-mono text-emerald-700 font-bold">18.4m (Valid)</td>
+              <td class="py-4 px-5">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold font-tech bg-emerald-100 text-emerald-900 border border-emerald-400">
+                  TEPAT WAKTU
+                </span>
+              </td>
+              <td class="py-4 px-5 text-center">
+                <button onclick="previewSelfie('Ilham Arifin', '08:04:12', '18.4m', 'TEPAT WAKTU')" class="px-3 py-1 rounded-xl bg-canvas border border-ink text-[11px] font-bold font-tech hover:bg-widget-pure transition shadow-art-sm">
+                  👁️ Buka Foto
+                </button>
+              </td>
+              <td class="py-4 px-5 text-center">
+                <button class="text-ink hover:underline font-tech font-bold">Koreksi</button>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-widget-pure transition">
+              <td class="py-4 px-5 font-mono font-bold text-ink">F5512530110</td>
+              <td class="py-4 px-5 font-bold font-tech text-ink">Andiardi</td>
+              <td class="py-4 px-5">Cabang Palu</td>
+              <td class="py-4 px-5 font-digital text-base font-bold text-amber-800">08:24:05</td>
+              <td class="py-4 px-5 font-mono text-emerald-700 font-bold">24.1m (Valid)</td>
+              <td class="py-4 px-5">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold font-tech bg-amber-100 text-amber-900 border border-amber-400">
+                  TERLAMBAT (9m)
+                </span>
+              </td>
+              <td class="py-4 px-5 text-center">
+                <button onclick="previewSelfie('Andiardi', '08:24:05', '24.1m', 'TERLAMBAT')" class="px-3 py-1 rounded-xl bg-canvas border border-ink text-[11px] font-bold font-tech hover:bg-widget-pure transition shadow-art-sm">
+                  👁️ Buka Foto
+                </button>
+              </td>
+              <td class="py-4 px-5 text-center">
+                <button class="text-ink hover:underline font-tech font-bold">Koreksi</button>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-widget-pure transition">
+              <td class="py-4 px-5 font-mono font-bold text-ink">F5512530112</td>
+              <td class="py-4 px-5 font-bold font-tech text-ink">Dian Abdillah M.</td>
+              <td class="py-4 px-5">Pusat</td>
+              <td class="py-4 px-5 font-digital text-base font-bold text-ink-muted">--:--:--</td>
+              <td class="py-4 px-5 font-mono text-ink-light">-</td>
+              <td class="py-4 px-5">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold font-tech bg-purple-100 text-purple-900 border border-purple-400">
+                  IZIN SAKIT
+                </span>
+              </td>
+              <td class="py-4 px-5 text-center">
+                <span class="text-[11px] font-mono text-ink-muted underline cursor-pointer">SuratDokter.pdf</span>
+              </td>
+              <td class="py-4 px-5 text-center">
+                <button class="text-purple-800 hover:underline font-tech font-bold">Verifikasi</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== MODAL: PREVIEW FOTO SWAFOTO ==================== -->
+  <div id="modal-selfie" class="fixed inset-0 bg-ink/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-widget rounded-[32px] border-3 border-ink shadow-art-lg max-w-sm w-full p-5 space-y-4">
+      <div class="flex items-center justify-between border-b-2 border-ink pb-2">
+        <h3 class="text-sm font-bold font-tech uppercase text-ink" id="modal-karyawan-name">Bukti Swafoto</h3>
+        <button onclick="closeSelfieModal()" class="w-7 h-7 rounded-full bg-canvas border border-ink flex items-center justify-center font-bold text-ink hover:bg-widget-pure">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <!-- Mock Image Frame -->
+      <div class="aspect-[4/3] bg-ink rounded-2xl border-2 border-ink overflow-hidden flex flex-col items-center justify-center relative">
+        <span class="text-6xl">🧑‍💻</span>
+        <div class="absolute bottom-2 left-2 bg-pill text-white px-2 py-0.5 rounded-lg text-[9px] font-mono">
+          GPS: Lat -0.8917, Lng 119.8872
+        </div>
+      </div>
+
+      <!-- Info details -->
+      <div class="space-y-1 text-xs font-tech text-ink bg-canvas p-3 rounded-2xl border-2 border-ink">
+        <p>Waktu Catat: <span id="modal-time" class="font-digital text-base font-bold">08:04:12</span></p>
+        <p>Jarak ke Titik: <span id="modal-distance" class="font-mono font-bold text-emerald-800">18.4m</span></p>
+        <p>Status: <span id="modal-status" class="font-bold uppercase text-emerald-800">TEPAT WAKTU</span></p>
+      </div>
+
+      <button onclick="closeSelfieModal()" class="w-full py-2.5 rounded-xl bg-ink text-canvas font-tech font-bold text-xs uppercase shadow-art-sm">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PENGAJUAN IZIN ==================== -->
+  <div id="modal-leave" class="fixed inset-0 bg-ink/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-widget rounded-[32px] border-3 border-ink shadow-art-lg max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b-2 border-ink pb-2">
+        <h3 class="text-sm font-bold font-tech uppercase text-ink">Formulir Pengajuan Izin</h3>
+        <button onclick="closeLeaveModal()" class="w-7 h-7 rounded-full bg-canvas border border-ink flex items-center justify-center font-bold text-ink hover:bg-widget-pure">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <form onsubmit="submitLeave(event)" class="space-y-3 text-xs font-tech">
+        <div>
+          <label class="block text-[10px] font-bold text-ink-muted uppercase mb-1">Jenis Izin:</label>
+          <select class="w-full px-3 py-2 rounded-xl bg-canvas border-2 border-ink font-bold focus:outline-none">
+            <option>IZIN (Keperluan Pribadi / Keluarga)</option>
+            <option>SAKIT (Dilengkapi Surat Dokter)</option>
+            <option>TUGAS_LUAR (Dinas Luar Kantor)</option>
+            <option>CUTI TAHUNAN</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-ink-muted uppercase mb-1">Mulai:</label>
+            <input type="date" value="2026-10-29" class="w-full px-3 py-2 rounded-xl bg-canvas border-2 border-ink font-mono text-xs">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-ink-muted uppercase mb-1">Sampai:</label>
+            <input type="date" value="2026-10-30" class="w-full px-3 py-2 rounded-xl bg-canvas border-2 border-ink font-mono text-xs">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-ink-muted uppercase mb-1">Alasan Lengkap:</label>
+          <textarea rows="3" placeholder="Tuliskan alasan permohonan izin Anda..." class="w-full px-3 py-2 rounded-xl bg-canvas border-2 border-ink text-xs focus:outline-none font-medium"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-ink-muted uppercase mb-1">Lampirkan Surat Bukti (Opsional):</label>
+          <input type="file" class="w-full text-xs font-mono file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border file:border-ink file:bg-canvas file:text-ink">
+        </div>
+
+        <button type="submit" class="w-full mt-2 py-3 rounded-xl bg-ink text-canvas font-bold uppercase shadow-art-sm hover:bg-[#2C3331] transition">
+          Kirim Pengajuan ke HRD
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    let isWithinRadius = true;
+    let isWebcamActive = false;
+    let localStream = null;
+
+    // Real-time Clock
+    function updateClock() {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      
+      const clockEl = document.getElementById('digital-clock');
+      const hudEl = document.getElementById('hud-timestamp');
+      if (clockEl) clockEl.innerText = timeStr;
+      if (hudEl) hudEl.innerText = `2026-10-28 ${timeStr}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function setMode(mode) {
+      const vk = document.getElementById('view-karyawan');
+      const va = document.getElementById('view-admin');
+      const bk = document.getElementById('btn-mode-karyawan');
+      const ba = document.getElementById('btn-mode-admin');
+
+      if (mode === 'karyawan') {
+        vk.classList.remove('hidden');
+        va.classList.add('hidden');
+        bk.className = "px-4 py-1.5 rounded-xl text-xs font-bold font-tech transition-all bg-canvas text-ink shadow-art-sm flex items-center gap-1.5";
+        ba.className = "px-4 py-1.5 rounded-xl text-xs font-medium font-tech text-[#9AA5A1] hover:text-white transition-all flex items-center gap-1.5";
+      } else {
+        vk.classList.add('hidden');
+        va.classList.remove('hidden');
+        ba.className = "px-4 py-1.5 rounded-xl text-xs font-bold font-tech transition-all bg-canvas text-ink shadow-art-sm flex items-center gap-1.5";
+        bk.className = "px-4 py-1.5 rounded-xl text-xs font-medium font-tech text-[#9AA5A1] hover:text-white transition-all flex items-center gap-1.5";
+      }
+    }
+
+    function setSimulatedLocation(valid) {
+      isWithinRadius = valid;
+      const dot = document.getElementById('gps-dot');
+      const txt = document.getElementById('gps-status-text');
+      const badge = document.getElementById('gps-mini-badge').children[1];
+      const btn = document.getElementById('btn-punch');
+      const warn = document.getElementById('punch-warning');
+
+      if (valid) {
+        badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-200/80 border-2 border-ink text-ink text-[10px] font-bold shadow-art-sm mt-0.5";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-600";
+        txt.innerText = "18m (Aman)";
+        btn.disabled = false;
+        btn.classList.remove('opacity-40', 'cursor-not-allowed');
+        warn.classList.add('hidden');
+      } else {
+        badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-200 border-2 border-ink text-ink text-[10px] font-bold shadow-art-sm mt-0.5";
+        dot.className = "w-2 h-2 rounded-full bg-rose-600 animate-ping";
+        txt.innerText = "340m (Luar)";
+        btn.disabled = true;
+        btn.classList.add('opacity-40', 'cursor-not-allowed');
+        warn.classList.remove('hidden');
+      }
+    }
+
+    async function toggleWebcam() {
+      const video = document.getElementById('webcam-video');
+      const placeholder = document.getElementById('simulated-viewfinder');
+      const btn = document.getElementById('btn-toggle-cam');
+
+      if (!isWebcamActive) {
+        try {
+          localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          video.srcObject = localStream;
+          video.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          btn.innerText = "Matikan Kamera";
+          isWebcamActive = true;
+        } catch (err) {
+          alert("Gagal mengakses webcam: " + err.message + "\n(Pastikan izin browser diberikan atau gunakan mode grafis).");
+        }
+      } else {
+        if (localStream) {
+          localStream.getTracks().forEach(track => track.stop());
+        }
+        video.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        btn.innerText = "Nyalakan Kamera";
+        isWebcamActive = false;
+      }
+    }
+
+    function handlePunch() {
+      if (!isWithinRadius) {
+        alert("Presensi ditolak! Koordinat GPS Anda di luar radius kantor acuan.");
+        return;
+      }
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} WITA`;
+      
+      document.getElementById('summary-masuk').innerText = timeStr;
+      const badge = document.getElementById('badge-masuk');
+      badge.className = "inline-block text-[9px] font-bold font-tech px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400";
+      badge.innerText = "Tepat Waktu";
+
+      alert("🎉 PRESENSI BERHASIL DICATAT!\n\n• Waktu: " + timeStr + "\n• Status: TEPAT_WAKTU\n• Geolocation: Jarak 18.4m (Terverifikasi)\n• Bukti Swafoto: Terenkripsi & Tersimpan.");
+    }
+
+    function previewSelfie(name, time, dist, status) {
+      document.getElementById('modal-karyawan-name').innerText = "Bukti Swafoto: " + name;
+      document.getElementById('modal-time').innerText = time;
+      document.getElementById('modal-distance').innerText = dist;
+      document.getElementById('modal-status').innerText = status;
+      document.getElementById('modal-selfie').classList.remove('hidden');
+    }
+
+    function closeSelfieModal() {
+      document.getElementById('modal-selfie').classList.add('hidden');
+    }
+
+    function openLeaveModal() {
+      document.getElementById('modal-leave').classList.remove('hidden');
+    }
+
+    function closeLeaveModal() {
+      document.getElementById('modal-leave').classList.add('hidden');
+    }
+
+    function submitLeave(e) {
+      e.preventDefault();
+      alert("✅ Pengajuan izin Anda telah terkirim ke sistem dan sedang menunggu persetujuan Admin/HRD.");
+      closeLeaveModal();
+    }
+
+    function exportCSV() {
+      const csvContent = "data:text/csv;charset=utf-8,NIK,Nama,Cabang,Tanggal,Jam Masuk,Jarak,Status\n"
+        + "F5512530109,Ilham Arifin,Cabang Palu,2026-10-28,08:04:12,18.4m,TEPAT_WAKTU\n"
+        + "F5512530110,Andiardi,Cabang Palu,2026-10-28,08:24:05,24.1m,TERLAMBAT\n"
+        + "F5512530112,Dian Abdillah,Pusat,2026-10-28,--:--:--,0.0m,IZIN_SAKIT\n";
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "laporan_presensi_kelompok10.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
